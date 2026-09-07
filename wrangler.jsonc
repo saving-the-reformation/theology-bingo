@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "areopagus-live-ai",
+  "main": "worker/live-ai.js",
+  "compatibility_date": "2026-09-01",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://saving-the-reformation.github.io",
+    "ALLOW_LOCALHOST": "false",
+    "OPENAI_MODEL": "gpt-5.4-mini"
+  }
+}

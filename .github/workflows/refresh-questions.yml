@@ -1,0 +1,37 @@
+name: Refresh Game Room questions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 15 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-game-room-questions
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate and validate fresh questions
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/generate-fresh-prompts.mjs
+      - name: Publish the fresh deck
+        run: |
+          if git diff --quiet -- fresh-prompts.js; then
+            echo "No new validated questions were produced."
+            exit 0
+          fi
+          git config user.name "Areopagus Question Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add fresh-prompts.js
+          git commit -m "Add weekly fresh Game Room questions"
+          git push

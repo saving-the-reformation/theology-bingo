@@ -1,0 +1,1 @@
+const FRESH_PROMPTS = [];
