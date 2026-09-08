@@ -1,2 +1,2 @@
 // Set this to the deployed Worker URL after completing LIVE_AI_SETUP.md.
-window.AREOPAGUS_LIVE_AI_ENDPOINT = '';
+window.AREOPAGUS_LIVE_AI_ENDPOINT = 'https://areopagus-live-ai.theology-bingo.workers.dev';
