@@ -1,6 +1,6 @@
 # Live AI Game Host
 
-The Game Room can request a brand-new, researched question whenever a player presses **Generate live question**. The public page calls a small Cloudflare Worker, and the Worker calls OpenAI. The OpenAI API key stays in Cloudflare's encrypted secrets and never appears in the webpage or repository.
+The Game Room can request brand-new, researched material whenever a player presses an AI batch button. The separate Live AI Host makes general multiple-choice rounds, while supported games make five prompts in their own format: Bible Who Am I, Who Said It, Guess the Theologian, Theology Jeopardy, Difficult Bible Passages, Bible Trivia, Scripture Scavenger Hunt, Explain It Simply, and Christian Would You Rather. The public page calls a small Cloudflare Worker, and the Worker calls OpenAI. The OpenAI API key stays in Cloudflare's encrypted secrets and never appears in the webpage or repository.
 
 ## One-time connection
 
@@ -17,10 +17,10 @@ Before sharing the endpoint widely, also enable a conservative Cloudflare rate-l
 
 ## What happens during play
 
-- The host selects a category, chooses one question or a five-question batch, and may type an optional focus.
+- The host can select a category in the general AI Host, or open a supported game and press **Create 5 fresh AI prompts**.
 - The endpoint asks OpenAI to search for authoritative sources and return the requested structured batch.
 - Both the endpoint and webpage validate the question before showing it.
 - The answer, explanation, and source stay hidden until the group answers.
-- The browser remembers the last 30 live questions and sends them as a no-repeat list with the next request.
+- Generated game prompts join that game's normal unseen queue and checkmark flow. The browser also remembers recent AI prompts and sends them as a no-repeat list with the next request.
 
 Each generated round uses the OpenAI API and may incur a small charge. Keep the API project separate from personal experiments, monitor usage, and set a budget appropriate for the server.
