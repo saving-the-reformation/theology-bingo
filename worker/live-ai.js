@@ -140,7 +140,7 @@ const GAME_FORMATS = {
 
 async function createGameBatch(body, env, cors) {
   const format = body.format;
-  const count = 5;
+  const count = Math.max(1, Math.min(20, Number(body.count) || 5));
   const avoid = Array.isArray(body.avoid) ? body.avoid.map(value => clean(value, 300)).filter(Boolean).slice(-40) : [];
   const item = {
     type: 'object', additionalProperties: false,
@@ -154,7 +154,7 @@ async function createGameBatch(body, env, cors) {
   };
   const schema = {type:'object',additionalProperties:false,required:['items'],properties:{items:{type:'array',minItems:count,maxItems:count,items:item}}};
   const prompt = [
-    `Create exactly five fresh rounds for this Christian Discord game format: ${GAME_FORMATS[format]}`,
+    `Create exactly ${count} fresh rounds for this Christian Discord game format: ${GAME_FORMATS[format]}`,
     'The room is Protestant-led and cross-tradition. Make prompts challenging, specific, clear, memorable, and suitable for friendly voice-chat play.',
     'Use web search. Every item must have one durable primary or authoritative HTTPS source. Never invent a quotation or source.',
     'Fill every schema field. Use empty strings and empty arrays for fields the selected format does not use; use 0 for unused points.',
@@ -167,7 +167,7 @@ async function createGameBatch(body, env, cors) {
   try {
     response = await fetch('https://api.openai.com/v1/responses', {
       method:'POST', headers:{'Authorization':`Bearer ${env.OPENAI_API_KEY}`,'Content-Type':'application/json'},
-      body:JSON.stringify({model:env.OPENAI_MODEL||'gpt-5.4-mini',store:false,max_output_tokens:7000,reasoning:{effort:'low'},tools:[{type:'web_search_preview',search_context_size:'medium'}],text:{format:{type:'json_schema',name:'game_specific_batch',strict:true,schema}},input:prompt}),
+      body:JSON.stringify({model:env.OPENAI_MODEL||'gpt-5.4-mini',store:false,max_output_tokens:Math.min(20000,2000+count*1000),reasoning:{effort:'low'},tools:[{type:'web_search_preview',search_context_size:'medium'}],text:{format:{type:'json_schema',name:'game_specific_batch',strict:true,schema}},input:prompt}),
     });
   } catch { return json({error:'OpenAI could not be reached. Please try again.'},502,cors); }
   if (!response.ok) { console.error('OpenAI game batch failed',response.status,await response.text()); return json({error:'OpenAI could not create this game batch right now.'},502,cors); }
